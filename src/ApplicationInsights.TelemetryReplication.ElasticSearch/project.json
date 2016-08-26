@@ -1,5 +1,10 @@
 ﻿{
   "version": "1.0.0-*",
+  "title": "ApplicationInsights Telemetry Replicator for ElasticSearch bulk API",
+  "packOptions": {
+    "owners": [ "BapulCorp", "gongdo" ],
+    "tags": [ "ApplicationInsights", "Telemetry", "TelemetryReplication", "ElasticSearch" ]
+  },
 
   "dependencies": {
     "ApplicationInsights.TelemetryReplication": "*",
