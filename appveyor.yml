@@ -1,5 +1,8 @@
 # master branch settings
 -
+	branches:  
+		only:
+		- master
 	version: '{build}'  
 	skip_commits:
 	  message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
@@ -13,9 +16,6 @@
 	  name: NuGet
 	pull_requests:  
 	  do_not_increment_build_number: true
-	branches:  
-		only:
-		- master
 	deploy:  
 	- provider: NuGet
 		name: production
@@ -27,6 +27,9 @@
 
 # dev branch settings
 -
+	branches:  
+	  only:
+	  - dev
 	version: '{build}'  
 	skip_commits:
 	  message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
@@ -40,9 +43,6 @@
 	  name: NuGet
 	pull_requests:  
 	  do_not_increment_build_number: true
-	branches:  
-	  only:
-	  - dev
 	deploy:  
 	- provider: NuGet
 	  server: https://www.myget.org/F/bapul/api/v2/package
