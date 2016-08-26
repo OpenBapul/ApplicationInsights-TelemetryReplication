@@ -1,10 +1,5 @@
+# base settings
 version: '{build}'  
-pull_requests:  
-  do_not_increment_build_number: true
-branches:  
-  only:
-  - master
-  - dev
 skip_commits:
   message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
 nuget:
@@ -15,6 +10,26 @@ test: off
 artifacts:  
 - path: .\artifacts\**\*.nupkg
   name: NuGet
+pull_requests:  
+  do_not_increment_build_number: true
+
+# master branch settings
+branches:  
+  only:
+  - master
+deploy:  
+- provider: NuGet
+  name: production
+  api_key:
+    secure: OdlepcT+ry0jb8FB3n6AQV23YA5/TtBC572OTrE/oLiKuMu807Re9Pqo78fYXbNI
+  on:
+    branch: master
+    appveyor_repo_tag: true
+
+# dev branch settings
+branches:  
+  only:
+  - dev
 deploy:  
 - provider: NuGet
   server: https://www.myget.org/F/bapul/api/v2/package
@@ -23,10 +38,3 @@ deploy:
   skip_symbols: true
   on:
     branch: dev
-- provider: NuGet
-  name: production
-  api_key:
-    secure: OdlepcT+ry0jb8FB3n6AQV23YA5/TtBC572OTrE/oLiKuMu807Re9Pqo78fYXbNI
-  on:
-    branch: master
-    appveyor_repo_tag: true
