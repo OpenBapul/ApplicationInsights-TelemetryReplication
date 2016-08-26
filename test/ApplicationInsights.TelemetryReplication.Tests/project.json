@@ -1,0 +1,25 @@
+﻿{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "dependencies": {
+    "ApplicationInsights.TelemetryReplication": "*",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "xunit": "2.2.0-beta2-build3300",
+    "Moq": "4.6.38-alpha",
+    "System.Diagnostics.TraceSource": "4.0.0"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0",
+          "type": "platform"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
+    }
+  }
+}
