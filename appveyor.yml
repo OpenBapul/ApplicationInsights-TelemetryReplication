@@ -1,20 +1,18 @@
-# base settings
-version: '{build}'  
-skip_commits:
-  message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
-nuget:
-  disable_publish_on_pr: true
-build_script:  
-- ps: .\Build.ps1
-test: off  
-artifacts:  
-- path: .\artifacts\**\*.nupkg
-  name: NuGet
-pull_requests:  
-  do_not_increment_build_number: true
-
 # master branch settings
 -
+	version: '{build}'  
+	skip_commits:
+	  message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
+	nuget:
+	  disable_publish_on_pr: true
+	build_script:  
+	- ps: .\Build.ps1
+	test: off  
+	artifacts:  
+	- path: .\artifacts\**\*.nupkg
+	  name: NuGet
+	pull_requests:  
+	  do_not_increment_build_number: true
 	branches:  
 		only:
 		- master
@@ -29,6 +27,19 @@ pull_requests:
 
 # dev branch settings
 -
+	version: '{build}'  
+	skip_commits:
+	  message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
+	nuget:
+	  disable_publish_on_pr: true
+	build_script:  
+	- ps: .\Build.ps1
+	test: off  
+	artifacts:  
+	- path: .\artifacts\**\*.nupkg
+	  name: NuGet
+	pull_requests:  
+	  do_not_increment_build_number: true
 	branches:  
 	  only:
 	  - dev
