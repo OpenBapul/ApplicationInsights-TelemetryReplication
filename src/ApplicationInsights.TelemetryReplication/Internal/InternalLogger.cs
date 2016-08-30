@@ -40,12 +40,14 @@ namespace ApplicationInsights.TelemetryReplication.Internal
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            return new NoopDisposable();
+            return Noop.Instance;
         }
-        private class NoopDisposable : IDisposable
+        private class Noop : IDisposable
         {
+            public static Noop Instance = new Noop();
             public void Dispose()
             {
+                // noop.
             }
         }
 

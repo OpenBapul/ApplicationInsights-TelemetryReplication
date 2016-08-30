@@ -161,7 +161,6 @@ namespace ApplicationInsights.TelemetryReplication.Tests
             {
                 yield return new[] { new TelemetryProxyOptions { DestinationUri = null } };
                 yield return new[] { new TelemetryProxyOptions { DestinationUri = new Uri("relativeUri", UriKind.Relative) } };
-                yield return new[] { new TelemetryProxyOptions { LoggerFactory = null } };
             }
 
             IEnumerator IEnumerable.GetEnumerator()

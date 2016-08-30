@@ -45,20 +45,23 @@ namespace ApplicationInsights.TelemetryReplication
             {
                 throw new ArgumentException("DestinationUri must be an absolute uri.");
             }
-            if (options.LoggerFactory == null)
-            {
-                throw new ArgumentException("LoggerFactory is required.");
-            }
             if (options.Replicators == null)
             {
                 options.Replicators = Enumerable.Empty<ITelemetryReplicator>();
+            }
+            if (options.LoggerFactory == null)
+            {
+                logger = new Internal.Logger(GetType().FullName, LogLevel.Trace);
+            }
+            else
+            {
+                logger = options.LoggerFactory.CreateLogger<TelemetryProxy>();
             }
             if (options.HttpClientFactory == null)
             {
                 options.HttpClientFactory = CreateDefaultHttpClient;
             }
             this.options = options;
-            logger = options.LoggerFactory.CreateLogger<TelemetryProxy>();
             httpClient = options.HttpClientFactory();
             DestinationUri = options.DestinationUri;
             Replicators = options.Replicators.ToList();

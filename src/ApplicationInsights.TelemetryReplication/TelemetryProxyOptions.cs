@@ -27,6 +27,6 @@ namespace ApplicationInsights.TelemetryReplication
         /// <summary>
         /// Logger factory.
         /// </summary>
-        public ILoggerFactory LoggerFactory { get; set; } = new LoggerFactory(LogLevel.Information);
+        public ILoggerFactory LoggerFactory { get; set; }
     }
 }
