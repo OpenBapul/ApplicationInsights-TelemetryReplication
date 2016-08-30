@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using TelemetryReplication.AspNetCore;
 using Microsoft.ApplicationInsights;
+using ApplicationInsights.TelemetryReplication.AspNetCore;
 using ApplicationInsights.TelemetryReplication.ElasticSearch;
 
 namespace TelemetryReplication.Samples.AspNetCore

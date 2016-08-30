@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using ApplicationInsights.TelemetryReplication;
 using Microsoft.ApplicationInsights.Extensibility;
-using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace TelemetryReplication.AspNetCore
+namespace ApplicationInsights.TelemetryReplication.AspNetCore
 {
     public static class TelemetryReplicationExtensions
     {

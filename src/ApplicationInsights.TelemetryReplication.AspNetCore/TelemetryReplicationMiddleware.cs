@@ -1,5 +1,4 @@
-﻿using ApplicationInsights.TelemetryReplication;
-using Microsoft.ApplicationInsights.Extensibility;
+﻿using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TelemetryReplication.AspNetCore
+namespace ApplicationInsights.TelemetryReplication.AspNetCore
 {
     public class TelemetryReplicationMiddleware
     {
