@@ -61,10 +61,9 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             AppId appId, 
             TelemetryConfiguration telemetryConfiguration)
         {
-            var builder = telemetryConfiguration
-                .TelemetryProcessorChainBuilder;
-            builder.Use((next) => new TelemetryReplicationProcessor(next, appId));
-            builder.Build();
+            telemetryConfiguration
+                .TelemetryProcessorChainBuilder
+                .UseAppId(appId);
         }
 
         private int checker = 0;
