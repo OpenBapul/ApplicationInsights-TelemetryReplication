@@ -71,8 +71,9 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
         {
             if (Interlocked.CompareExchange(ref checker, 1, 0) == 0)
             {
-                telemetryConfiguration.TelemetryChannel.EndpointAddress
-                = $"{context.Request.Scheme}://{context.Request.Host}{proxyPath}";
+                telemetryConfiguration
+                    .UseTelemetryProxy(
+                        $"{context.Request.Scheme}://{context.Request.Host}{proxyPath}");
                 logger.LogInformation($"The end-point of Telemetry proxy has been determinated. {telemetryConfiguration.TelemetryChannel.EndpointAddress}");
             }
             if (context.Request.Path.Equals(proxyPath))
