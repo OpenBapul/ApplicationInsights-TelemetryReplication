@@ -126,13 +126,16 @@ namespace ApplicationInsights.TelemetryReplication
             {
                 message.Content.Headers.Add(header.Key, header.Value);
             }
+            logger.LogTrace("Send telemetry to the original TelemetryChannel.");
             var response = await httpClient.SendAsync(message, CancellationToken.None);
+            logger.LogInformation($"Telemetry sent to the original TelemetryChannel with status code {response?.StatusCode}.");
 
             if (Replicators.Any())
             {
                 using (var stream = new MemoryStream(buffer))
                 {
                     await ReplicateAsync(stream, headers.Where(header => HostHeadersFilter(header)));
+                    logger.LogInformation("Telemetry was replicated.");
                 }
             }
 

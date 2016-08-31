@@ -11,21 +11,21 @@
 #>
 function Exec  
 {
-    [CmdletBinding()]
-    param(
-        [Parameter(Position=0,Mandatory=1)][scriptblock]$cmd,
-        [Parameter(Position=1,Mandatory=0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
-    )
-    & $cmd
-    if ($lastexitcode -ne 0) {
-        throw ("Exec: " + $errorMessage)
-    }
+	[CmdletBinding()]
+	param(
+		[Parameter(Position=0,Mandatory=1)][scriptblock]$cmd,
+		[Parameter(Position=1,Mandatory=0)][string]$errorMessage = ($msgs.error_bad_command -f $cmd)
+	)
+	& $cmd
+	if ($lastexitcode -ne 0) {
+		throw ("Exec: " + $errorMessage)
+	}
 }
 
 # keep current directory
 $buildDirectory = Get-Location
-$revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
-$branch = @{ $true = $env:APPVEYOR_REPO_BRANCH; $false = "dev" }[$env:APPVEYOR_REPO_BRANCH -eq "master"];
+$branch = @{ $true = $env:APPVEYOR_REPO_BRANCH; $false = "dev" }[$env:APPVEYOR_REPO_BRANCH -ne $NULL];
+$revision = $branch + @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 
 Write-Host "clean artifacts folder"
 if(Test-Path ./artifacts) { Remove-Item ./artifacts -Force -Recurse }

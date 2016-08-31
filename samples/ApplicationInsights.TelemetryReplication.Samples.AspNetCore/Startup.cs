@@ -8,8 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.ApplicationInsights;
 using ApplicationInsights.TelemetryReplication.AspNetCore;
 using ApplicationInsights.TelemetryReplication.ElasticSearch;
+using ApplicationInsights.TelemetryReplication.Logging;
 
-namespace TelemetryReplication.Samples.AspNetCore
+namespace Samples.AspNetCore
 {
     public class Startup
     {
@@ -57,7 +58,7 @@ namespace TelemetryReplication.Samples.AspNetCore
             ILoggerFactory loggerFactory)
         {
             loggerFactory
-                .AddConsole(LogLevel.Trace)
+                .AddAi(() => app.ApplicationServices.GetService<TelemetryClient>(), LogLevel.Trace)
                 .AddDebug(LogLevel.Trace);
 
             app.UseApplicationInsightsTelemetryReplication("/ai/track");
@@ -75,6 +76,8 @@ namespace TelemetryReplication.Samples.AspNetCore
             {
                 var client = context.RequestServices.GetService<TelemetryClient>();
                 client.TrackEvent("Hello World Event");
+                var logger = context.RequestServices.GetService<ILoggerFactory>().CreateLogger("SampleApp");
+                logger.LogInformation("Hello World Event by logger");
                 await context.Response.WriteAsync("Hello World!");
             });
         }

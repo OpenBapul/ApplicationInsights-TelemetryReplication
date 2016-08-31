@@ -11,6 +11,7 @@
     "ApplicationInsights.TelemetryReplication": "*",
     "ApplicationInsights.TelemetryReplication.ElasticSearch": "*",
     "ApplicationInsights.TelemetryReplication.AspNetCore": "*",
+    "ApplicationInsights.TelemetryReplication.Logging": "*",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",

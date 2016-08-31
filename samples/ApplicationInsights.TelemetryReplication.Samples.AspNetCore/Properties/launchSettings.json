@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ApplicationInsights.TelemetryReplication.Samples.AspNetCore": {
+    "ApplicationInsights.Samples.AspNetCore": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "http://localhost:5000",
