@@ -9,6 +9,7 @@ using Microsoft.ApplicationInsights;
 using ApplicationInsights.TelemetryReplication.AspNetCore;
 using ApplicationInsights.TelemetryReplication.ElasticSearch;
 using ApplicationInsights.TelemetryReplication.Logging;
+using System.Reflection;
 
 namespace Samples.AspNetCore
 {
@@ -60,9 +61,8 @@ namespace Samples.AspNetCore
             loggerFactory
                 .AddAi(() => app.ApplicationServices.GetService<TelemetryClient>(), LogLevel.Trace)
                 .AddDebug(LogLevel.Trace);
-
             app.UseApplicationInsightsTelemetryReplication(
-                "ApplicationInsights.TelemetryReplication.Sample.AspNetCore",
+                env.GetAppId(typeof(Startup)),
                 "/ai/track");
             app.UseApplicationInsightsRequestTelemetry();
 
