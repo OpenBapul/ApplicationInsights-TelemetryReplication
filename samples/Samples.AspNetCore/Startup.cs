@@ -61,7 +61,9 @@ namespace Samples.AspNetCore
                 .AddAi(() => app.ApplicationServices.GetService<TelemetryClient>(), LogLevel.Trace)
                 .AddDebug(LogLevel.Trace);
 
-            app.UseApplicationInsightsTelemetryReplication("/ai/track");
+            app.UseApplicationInsightsTelemetryReplication(
+                "ApplicationInsights.TelemetryReplication.Sample.AspNetCore",
+                "/ai/track");
             app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())

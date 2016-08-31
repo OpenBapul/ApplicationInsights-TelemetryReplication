@@ -20,11 +20,16 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
         private readonly TelemetryConfiguration telemetryConfiguration;
         private readonly ILogger logger;
         public TelemetryReplicationMiddleware(
+            string appName,
             RequestDelegate next,
             string proxyPath,
             TelemetryConfiguration telemetryConfiguration,
             ILoggerFactory loggerFactory)
         {
+            if (string.IsNullOrWhiteSpace(appName))
+            {
+                throw new ArgumentNullException(nameof(appName));
+            }
             if (proxyPath == null)
             {
                 throw new ArgumentNullException(nameof(proxyPath));
@@ -49,6 +54,17 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             this.next = next;
             this.proxyPath = proxyPath;
             this.telemetryConfiguration = telemetryConfiguration;
+            AddTelemetryProcessor(appName, telemetryConfiguration);
+        }
+
+        private void AddTelemetryProcessor(
+            string appName, 
+            TelemetryConfiguration telemetryConfiguration)
+        {
+            var builder = telemetryConfiguration
+                .TelemetryProcessorChainBuilder;
+            builder.Use((next) => new TelemetryReplicationProcessor(next, appName));
+            builder.Build();
         }
 
         private int checker = 0;

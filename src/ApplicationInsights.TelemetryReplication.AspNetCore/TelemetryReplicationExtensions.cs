@@ -40,10 +40,12 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
         /// The telemetry proxy will be determined by the first request's scheme and host.
         /// </summary>
         /// <param name="app">The App builder.</param>
+        /// <param name="appName">The Application name.</param>
         /// <param name="proxyPath">Telemetry proxy path. It must be started with '/'.</param>
         /// <returns></returns>
         public static IApplicationBuilder UseApplicationInsightsTelemetryReplication(
             this IApplicationBuilder app,
+            string appName,
             string proxyPath)
         {
             var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
@@ -51,6 +53,7 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             OriginalTelemetryChannelEndpointAddress =
                 configuration.TelemetryChannel.EndpointAddress;
             app.UseMiddleware<TelemetryReplicationMiddleware>(
+                appName,
                 proxyPath, 
                 configuration, 
                 loggerFactory);
