@@ -9,7 +9,9 @@
   "dependencies": {
     "ApplicationInsights.TelemetryReplication": "*",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "Microsoft.ApplicationInsights": "2.1.0"
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "Microsoft.ApplicationInsights": "2.1.0",
+    "System.ComponentModel": "4.0.1"
   },
 
   "frameworks": {

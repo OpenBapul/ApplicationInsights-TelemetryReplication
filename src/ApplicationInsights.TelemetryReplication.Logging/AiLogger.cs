@@ -76,6 +76,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
         private void TrackTrace<TState>(LogLevel logLevel, EventId eventId, string message, TState state)
         {
             var telemetry = new TraceTelemetry(message, ToSeverityLevel(logLevel));
+            telemetry.Properties["logger"] = categoryName;
             telemetry.Properties["eventName"] = eventId.Name;
             telemetry.Properties["eventId"] = eventId.Id.ToString();
             telemetryClient.TrackTrace(telemetry);
@@ -84,6 +85,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
         private void TrackException<TState>(EventId eventId, string message, TState state, Exception exception)
         {
             var telemetry = new ExceptionTelemetry(exception);
+            telemetry.Properties["logger"] = categoryName;
             telemetry.Properties["eventName"] = eventId.Name;
             telemetry.Properties["eventId"] = eventId.Id.ToString();
             telemetry.Properties["message"] = message;
