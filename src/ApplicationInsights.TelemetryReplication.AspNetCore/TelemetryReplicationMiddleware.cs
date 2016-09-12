@@ -16,13 +16,22 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
     public class TelemetryReplicationMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly Uri proxyUri;
         private readonly string proxyPath;
         private readonly TelemetryConfiguration telemetryConfiguration;
         private readonly ILogger logger;
+        /// <summary>
+        /// Initiate TelemetryReplicationMiddleware instance.
+        /// </summary>
+        /// <param name="appId">Id for this application.</param>
+        /// <param name="next">Next request delegate.</param>
+        /// <param name="proxyUri">Absolute uri of the telemetry proxy.</param>
+        /// <param name="telemetryConfiguration">Telemetry configuration.</param>
+        /// <param name="loggerFactory">Logger factory</param>
         public TelemetryReplicationMiddleware(
             AppId appId,
             RequestDelegate next,
-            string proxyPath,
+            Uri proxyUri,
             TelemetryConfiguration telemetryConfiguration,
             ILoggerFactory loggerFactory)
         {
@@ -30,13 +39,13 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             {
                 throw new ArgumentNullException(nameof(appId));
             }
-            if (proxyPath == null)
+            if (proxyUri == null)
             {
-                throw new ArgumentNullException(nameof(proxyPath));
+                throw new ArgumentNullException(nameof(proxyUri));
             }
-            if (false == proxyPath.StartsWith("/"))
+            if (false == proxyUri.IsAbsoluteUri)
             {
-                throw new ArgumentException("proxyPath must be started with '/'");
+                throw new ArgumentException("proxyUri must be an absolute uri.");
             }
             if (telemetryConfiguration == null)
             {
@@ -52,7 +61,8 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             }
 
             this.next = next;
-            this.proxyPath = proxyPath;
+            this.proxyUri = proxyUri;
+            proxyPath = $"/{proxyUri.GetComponents(UriComponents.Path, UriFormat.UriEscaped).Trim('/')}";
             this.telemetryConfiguration = telemetryConfiguration;
             AddTelemetryProcessor(appId, telemetryConfiguration);
         }
@@ -72,11 +82,10 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             if (Interlocked.CompareExchange(ref checker, 1, 0) == 0)
             {
                 telemetryConfiguration
-                    .UseTelemetryProxy(
-                        $"{context.Request.Scheme}://{context.Request.Host}{proxyPath}");
+                    .UseTelemetryProxy(proxyUri.ToString());
                 logger.LogInformation($"The end-point of Telemetry proxy has been determinated. {telemetryConfiguration.TelemetryChannel.EndpointAddress}");
             }
-            if (context.Request.Path.Equals(proxyPath))
+            if (context.Request.Path.Equals(proxyPath, StringComparison.OrdinalIgnoreCase))
             {
                 logger.LogDebug($"A telemetry transmission({context.TraceIdentifier}) is being processed by the TelemetryProxy.");
                 var proxy = context.RequestServices.GetService<TelemetryProxy>();

@@ -44,15 +44,15 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
         /// <param name="app">The App builder.</param>
         /// <param name="env">The hosting environment an application running in.</param>
         /// <param name="applicationType">The type of any class in the application.</param>
-        /// <param name="proxyPath">Telemetry proxy path. It must be started with '/'.</param>
+        /// <param name="proxyUri">Telemetry proxy uri. It must be an absoulte uri.</param>
         /// <returns></returns>
         public static IApplicationBuilder UseApplicationInsightsTelemetryReplication(
             this IApplicationBuilder app,
             IHostingEnvironment env,
             Type applicationType,
-            string proxyPath)
+            Uri proxyUri)
         {
-            return UseApplicationInsightsTelemetryReplication(app, env.GetAppId(applicationType), proxyPath);
+            return UseApplicationInsightsTelemetryReplication(app, env.GetAppId(applicationType), proxyUri);
         }
 
         /// <summary>
@@ -61,12 +61,12 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
         /// </summary>
         /// <param name="app">The App builder.</param>
         /// <param name="appId">The application identifier.</param>
-        /// <param name="proxyPath">Telemetry proxy path. It must be started with '/'.</param>
+        /// <param name="proxyUri">Telemetry proxy uri. It must be an absoulte uri.</param>
         /// <returns></returns>
         public static IApplicationBuilder UseApplicationInsightsTelemetryReplication(
             this IApplicationBuilder app,
             AppId appId,
-            string proxyPath)
+            Uri proxyUri)
         {
             var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
@@ -74,7 +74,7 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
                 configuration.TelemetryChannel.EndpointAddress;
             app.UseMiddleware<TelemetryReplicationMiddleware>(
                 appId,
-                proxyPath, 
+                proxyUri, 
                 configuration, 
                 loggerFactory);
             return app;
