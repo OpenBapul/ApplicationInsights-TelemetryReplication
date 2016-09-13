@@ -95,16 +95,22 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
                 catch (Exception ex)
                 {
                     context.Response.StatusCode = 500;
-                    var message = ex.Message;
+                    var message = $"{ex.Message}\n{ex.StackTrace}";
+                    if (ex.InnerException != null)
+                    {
+                        message += $"\ninner exception:\n{ex.InnerException.Message}\n{ex.InnerException.StackTrace}";
+                    }
+                    logger.LogError(message);
                     var stream = new MemoryStream();
                     using (var sw = new StreamWriter(stream))
                     {
-                        sw.WriteLine($"{message}\n{ex.StackTrace}");
+                        sw.WriteLine($"{message}");
                         if (ex.InnerException != null)
                         {
                             sw.WriteLine($"inner exception:");
-                            sw.WriteLine($"{ex.InnerException.Message}\n{ex.StackTrace}");
+                            sw.WriteLine($"{ex.InnerException.Message}");
                         }
+                        stream.Seek(0, SeekOrigin.Begin);
                         context.Response.Body = stream;
                     }
                 }
