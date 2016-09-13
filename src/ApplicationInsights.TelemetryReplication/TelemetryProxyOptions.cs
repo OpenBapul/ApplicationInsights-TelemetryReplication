@@ -1,8 +1,5 @@
-﻿using ApplicationInsights.TelemetryReplication.Internal;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 
 namespace ApplicationInsights.TelemetryReplication
@@ -13,20 +10,28 @@ namespace ApplicationInsights.TelemetryReplication
     public class TelemetryProxyOptions
     {
         /// <summary>
-        /// Original endpoint address of TelemetryChannel.
+        /// The original endpoint address of TelemetryChannel.
         /// </summary>
-        public Uri DestinationUri { get; set; } = new Uri("https://dc.services.visualstudio.com/v2/track", UriKind.Absolute);
+        public string EndpointAddress { get; set; }
         /// <summary>
-        /// A factory that creates HttpClient to send telemetries to DestinationUri.
+        /// The factory that creates HttpClient to send telemetries to DestinationUri.
         /// </summary>
         public Func<HttpClient> HttpClientFactory { get; set; }
         /// <summary>
-        /// Telemetry replicators.
+        /// The factory that creates telemetry replicators.
         /// </summary>
-        public IEnumerable<ITelemetryReplicator> Replicators { get; set; } = Enumerable.Empty<ITelemetryReplicator>();
+        public ITelemetryReplicatorsFactory TelemetryReplicatorFactory { get; set; }
         /// <summary>
-        /// Logger factory.
+        /// The logger factory.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; }
+
+        /// <summary>
+        /// Gets the default telemetry proxy options.
+        /// </summary>
+        public static TelemetryProxyOptions Default => new TelemetryProxyOptions
+        {
+            EndpointAddress = "https://dc.services.visualstudio.com/v2/track",
+        };
     }
 }

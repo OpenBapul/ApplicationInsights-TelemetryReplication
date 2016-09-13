@@ -75,17 +75,13 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             telemetryConfiguration
                 .TelemetryProcessorChainBuilder
                 .UseAppId(appId);
+            telemetryConfiguration
+                .UseTelemetryProxy(proxyUri.ToString());
+            logger.LogInformation($"The end-point of Telemetry proxy has been changed. {telemetryConfiguration.TelemetryChannel.EndpointAddress}");
         }
 
-        private int checker = 0;
         public async Task Invoke(HttpContext context)
         {
-            if (Interlocked.CompareExchange(ref checker, 1, 0) == 0)
-            {
-                telemetryConfiguration
-                    .UseTelemetryProxy(proxyUri.ToString());
-                logger.LogInformation($"The end-point of Telemetry proxy has been determinated. {telemetryConfiguration.TelemetryChannel.EndpointAddress}");
-            }
             if (context.Request.Path.Equals(proxyPath, StringComparison.OrdinalIgnoreCase))
             {
                 try

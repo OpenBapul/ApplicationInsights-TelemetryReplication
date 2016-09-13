@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +24,7 @@ namespace ApplicationInsights.TelemetryReplication
         /// <summary>
         /// Initializes new TelemetryProxy instance with default options.
         /// </summary>
-        public TelemetryProxy() : this(new TelemetryProxyOptions()) { }
+        public TelemetryProxy() : this(TelemetryProxyOptions.Default) { }
         /// <summary>
         /// Initializes new TelemetryProxy instance with given options.
         /// </summary>
@@ -37,17 +35,14 @@ namespace ApplicationInsights.TelemetryReplication
             {
                 throw new ArgumentNullException(nameof(options));
             }
-            if (options.DestinationUri == null)
+            if (string.IsNullOrWhiteSpace(options.EndpointAddress))
             {
-                throw new ArgumentException("DestinationUri is required.");
+                throw new ArgumentException($"{nameof(options.EndpointAddress)} is required.");
             }
-            if (false == options.DestinationUri.IsAbsoluteUri)
+            EndpointUri = new Uri(options.EndpointAddress, UriKind.RelativeOrAbsolute);
+            if (false == EndpointUri.IsAbsoluteUri)
             {
-                throw new ArgumentException("DestinationUri must be an absolute uri.");
-            }
-            if (options.Replicators == null)
-            {
-                options.Replicators = Enumerable.Empty<ITelemetryReplicator>();
+                throw new ArgumentException($"{nameof(options.EndpointAddress)} must be an absolute uri.");
             }
             if (options.LoggerFactory == null)
             {
@@ -63,14 +58,14 @@ namespace ApplicationInsights.TelemetryReplication
             }
             this.options = options;
             httpClient = options.HttpClientFactory();
-            DestinationUri = options.DestinationUri;
-            Replicators = options.Replicators.ToList();
+            Replicators = options.TelemetryReplicatorFactory?.Create()
+                ?? Enumerable.Empty<ITelemetryReplicator>();
         }
 
         /// <summary>
         /// Gets destination uri option.
         /// </summary>
-        public Uri DestinationUri { get; private set; }
+        public Uri EndpointUri { get; private set; }
         /// <summary>
         /// Gets registered replicators.
         /// </summary>
@@ -114,7 +109,7 @@ namespace ApplicationInsights.TelemetryReplication
                     $"HTTP body must be greater than 1 byte.");
             }
 
-            var message = new HttpRequestMessage(HttpMethod.Post, DestinationUri);
+            var message = new HttpRequestMessage(HttpMethod.Post, EndpointUri);
             var filteredHeaders = headers
                 .Where(header => HostHeadersFilter(header) && ContentHeadersFilter(header));
             foreach (var header in filteredHeaders)

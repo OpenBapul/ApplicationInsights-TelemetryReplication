@@ -9,6 +9,7 @@ using Microsoft.ApplicationInsights;
 using ApplicationInsights.TelemetryReplication.AspNetCore;
 using ApplicationInsights.TelemetryReplication.ElasticSearch;
 using ApplicationInsights.TelemetryReplication.Logging;
+using ApplicationInsights.TelemetryReplication;
 
 namespace Samples.AspNetCore
 {
@@ -32,22 +33,16 @@ namespace Samples.AspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry(Configuration);
-            services.AddApplicationInsightsTelemetryReplication(options =>
+            services.AddElasticSearchTelemetryReplicator(options =>
             {
-                // you need to configure appsettings.json first.
-                var replicatorOptions = new ElasticSearchTelemetryReplicatorOptions
+                options.BulkEndPoint = new Uri(Configuration["ElasticSearch:BulkEndPoint"], UriKind.Absolute);
+                options.IndexSelector = jobject => new IndexDefinition
                 {
-                    
-                    BulkEndPoint = new Uri(Configuration["ElasticSearch:BulkEndPoint"], UriKind.Absolute),
-                    IndexSelector = jobject => new IndexDefinition
-                    {
-                        Index = Configuration["ElasticSearch:Index"],
-                        Type = Configuration["ElasticSearch:Type"],
-                    },
+                    Index = Configuration["ElasticSearch:Index"],
+                    Type = Configuration["ElasticSearch:Type"],
                 };
-                var replicator = new ElasticSearchTelemetryReplicator(replicatorOptions);
-                options.Replicators = new[] { replicator };
             });
+            services.AddApplicationInsightsTelemetryReplication();
             services.AddMvcCore();
         }
 
