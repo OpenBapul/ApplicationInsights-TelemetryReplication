@@ -6,6 +6,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -87,25 +88,49 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             }
             if (context.Request.Path.Equals(proxyPath, StringComparison.OrdinalIgnoreCase))
             {
-                logger.LogDebug($"A telemetry transmission({context.TraceIdentifier}) is being processed by the TelemetryProxy.");
-                var proxy = context.RequestServices.GetService<TelemetryProxy>();
-                var headers = context.Request.Headers
-                    .Select(header => new KeyValuePair<string, IEnumerable<string>>(
-                        header.Key,
-                        header.Value));
-                var response = await proxy.ProcessAsync(context.Request.Body, headers);
-                foreach (var header in response.Headers)
+                try
                 {
-                    context.Response.Headers.Add(header.Key, new StringValues(header.Value.ToArray()));
+                    await ProcessAsync(context);
                 }
-                context.Response.StatusCode = (int)response.StatusCode;
-                await context.Response.WriteAsync(await response.Content.ReadAsStringAsync(), Encoding.UTF8);
-                logger.LogDebug($"A telemetry transmission({context.TraceIdentifier}) is completed.");
+                catch (Exception ex)
+                {
+                    context.Response.StatusCode = 500;
+                    var message = ex.Message;
+                    var stream = new MemoryStream();
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        sw.WriteLine($"{message}\n{ex.StackTrace}");
+                        if (ex.InnerException != null)
+                        {
+                            sw.WriteLine($"inner exception:");
+                            sw.WriteLine($"{ex.InnerException.Message}\n{ex.StackTrace}");
+                        }
+                        context.Response.Body = stream;
+                    }
+                }
             }
             else
             {
                 await next(context);
             }
+        }
+
+        private async Task ProcessAsync(HttpContext context)
+        {
+            logger.LogDebug($"A telemetry transmission({context.TraceIdentifier}) is being processed by the TelemetryProxy.");
+            var proxy = context.RequestServices.GetService<TelemetryProxy>();
+            var headers = context.Request.Headers
+                .Select(header => new KeyValuePair<string, IEnumerable<string>>(
+                    header.Key,
+                    header.Value));
+            var response = await proxy.ProcessAsync(context.Request.Body, headers);
+            foreach (var header in response.Headers)
+            {
+                context.Response.Headers.Add(header.Key, new StringValues(header.Value.ToArray()));
+            }
+            context.Response.StatusCode = (int)response.StatusCode;
+            await context.Response.WriteAsync(await response.Content.ReadAsStringAsync(), Encoding.UTF8);
+            logger.LogDebug($"A telemetry transmission({context.TraceIdentifier}) is completed.");
         }
 
         private class NoopLogger : ILogger
