@@ -27,6 +27,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
                 StandardDeviation = 1
             };
             metric.Properties["test"] = "test";
+            metric.Properties["null"] = null;
             metric.Properties["timestamp"] = now;
             var result = metric.ToDictionary();
             Assert.Equal("test", result["name"].ToString());
@@ -37,6 +38,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
             Assert.Equal(1.0, (double)result["standardDeviation"]);
             Assert.Equal("remark", result["remark"].ToString());
             Assert.Equal("test", result["test"].ToString());
+            Assert.Equal(null, result["null"]);
             Assert.Equal(now, (DateTimeOffset)result["timestamp"]);
         }
 
@@ -72,6 +74,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
                 { "standardDeviation", 1.0 },
                 { "remark", "remark" },
                 { "test", "test" },
+                { "null", null },
                 { "timestamp", now },
             };
             var result = MetricLog.Create(properties);
@@ -83,6 +86,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
             Assert.Equal(1.0, result.StandardDeviation);
             Assert.Equal("remark", result.Remark);
             Assert.Equal("test", result.Properties["test"]);
+            Assert.Equal(null, result.Properties["null"]);
             Assert.Equal(now, (DateTimeOffset)result.Properties["timestamp"]);
         }
 

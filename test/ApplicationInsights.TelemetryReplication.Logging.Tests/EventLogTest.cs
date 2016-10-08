@@ -21,11 +21,13 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
             var @event = new EventLog("test");
             @event.Metrics["Duration"] = 123.123;
             @event.Properties["test"] = "test";
+            @event.Properties["null"] = null;
             @event.Properties["timestamp"] = now;
             var result = @event.ToDictionary();
             Assert.Equal("test", result["name"].ToString());
             Assert.Equal(123.123, (double)result["Metric.Duration"]);
             Assert.Equal("test", result["test"].ToString());
+            Assert.Equal(null, result["null"]);
             Assert.Equal(now, (DateTimeOffset)result["timestamp"]);
         }
 
@@ -60,12 +62,14 @@ namespace ApplicationInsights.TelemetryReplication.Logging.Tests
                 { "name", "test" },
                 { "Metric.Duration", 123.123 },
                 { "test", "test" },
+                { "null", null },
                 { "timestamp", now },
             };
             var result = EventLog.Create(properties);
             Assert.Equal("test", result.Name);
             Assert.Equal(123.123, result.Metrics["Duration"]);
             Assert.Equal("test", result.Properties["test"]);
+            Assert.Equal(null, result.Properties["null"]);
             Assert.Equal(now, (DateTimeOffset)result.Properties["timestamp"]);
         }
 

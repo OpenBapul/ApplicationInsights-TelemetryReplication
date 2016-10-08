@@ -129,7 +129,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
             {
                 foreach (var item in properties)
                 {
-                    telemetry.Properties[item.Key] = item.Value.ToString();
+                    telemetry.Properties[item.Key] = item.Value?.ToString();
                 }
             }
             telemetry.Properties["logger"] = categoryName;
@@ -149,7 +149,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
             {
                 foreach (var item in metric.Properties)
                 {
-                    telemetry.Properties[item.Key] = item.Value.ToString();
+                    telemetry.Properties[item.Key] = item.Value?.ToString();
                 }
             }
             telemetry.Properties["logger"] = categoryName;
@@ -166,7 +166,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
             {
                 foreach (var item in @event.Properties)
                 {
-                    telemetry.Properties[item.Key] = item.Value.ToString();
+                    telemetry.Properties[item.Key] = item.Value?.ToString();
                 }
             }
             if (@event.Metrics != null)
@@ -189,7 +189,7 @@ namespace ApplicationInsights.TelemetryReplication.Logging
             {
                 foreach (var item in properties)
                 {
-                    telemetry.Properties[item.Key] = item.Value.ToString();
+                    telemetry.Properties[item.Key] = item.Value?.ToString();
                 }
             }
             telemetry.Properties["logger"] = categoryName;
