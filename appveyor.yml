@@ -6,11 +6,11 @@
 
   environment:
     matrix:
-      - CLI_VERSION: 1.0.0-preview2-003131
+      - CLI_VERSION: 1.0.0-preview2-1-003177
 
   install:
     # .NET Core SDK binaries
-    - ps: .\dotnet-install.ps1
+    - ps: .\dotnet-install.ps1 -version $env:CLI_VERSION
     - ps: dotnet --info
   version: '{build}'  
   skip_commits:
@@ -43,11 +43,11 @@
 
   environment:
     matrix:
-      - CLI_VERSION: 1.0.0-preview2-003131
+      - CLI_VERSION: 1.0.0-preview2-1-003177
 
   install:
     # .NET Core SDK binaries
-    - ps: .\dotnet-install.ps1
+    - ps: .\dotnet-install.ps1 -version $env:CLI_VERSION
     - ps: dotnet --info
   version: '{build}'  
   skip_commits:
