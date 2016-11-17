@@ -10,13 +10,8 @@
 
   install:
     # .NET Core SDK binaries
-    - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/$($env:CLI_VERSION)/dotnet-dev-win-x64.$($env:CLI_VERSION.ToLower()).zip"
-    - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
-    - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
-    - ps: $tempFile = [System.IO.Path]::GetTempFileName()
-    - ps: (New-Object System.Net.WebClient).DownloadFile($url, $tempFile)
-    - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFile, $env:DOTNET_INSTALL_DIR)
-    - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+    - ps: .\dotnet-install.ps1
+	- ps: dotnet --info
   version: '{build}'  
   skip_commits:
     message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
@@ -52,13 +47,8 @@
 
   install:
     # .NET Core SDK binaries
-    - ps: $url = "https://dotnetcli.blob.core.windows.net/dotnet/preview/Binaries/$($env:CLI_VERSION)/dotnet-dev-win-x64.$($env:CLI_VERSION.ToLower()).zip"
-    - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
-    - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
-    - ps: $tempFile = [System.IO.Path]::GetTempFileName()
-    - ps: (New-Object System.Net.WebClient).DownloadFile($url, $tempFile)
-    - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFile, $env:DOTNET_INSTALL_DIR)
-    - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+    - ps: .\dotnet-install.ps1
+	- ps: dotnet --info
   version: '{build}'  
   skip_commits:
     message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
