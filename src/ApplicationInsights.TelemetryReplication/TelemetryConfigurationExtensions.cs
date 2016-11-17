@@ -1,4 +1,5 @@
-﻿using Microsoft.ApplicationInsights.Extensibility;
+﻿using ApplicationInsights.TelemetryReplication.Internal;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 
 namespace ApplicationInsights.TelemetryReplication
@@ -15,6 +16,8 @@ namespace ApplicationInsights.TelemetryReplication
             this TelemetryConfiguration configuration,
             string proxyUri)
         {
+            TelemetryConfigurationHolder.OriginalEndpointAddress
+                = configuration.TelemetryChannel.EndpointAddress;
             configuration.TelemetryChannel.EndpointAddress = proxyUri;
             return configuration;
         }

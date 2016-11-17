@@ -9,6 +9,7 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Converters;
 using System.Text;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationInsights.TelemetryReplication.ElasticSearch
 {
@@ -19,11 +20,18 @@ namespace ApplicationInsights.TelemetryReplication.ElasticSearch
     {
         private readonly ElasticSearchTelemetryReplicatorOptions options;
         private readonly HttpClient httpClient;
-        public ElasticSearchTelemetryReplicator(ElasticSearchTelemetryReplicatorOptions options)
+        private readonly ILogger logger;
+        public ElasticSearchTelemetryReplicator(
+            ElasticSearchTelemetryReplicatorOptions options,
+            ILoggerFactory loggerFactory)
         {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
+            }
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
             }
             if (options.BulkEndPoint == null)
             {
@@ -47,14 +55,17 @@ namespace ApplicationInsights.TelemetryReplication.ElasticSearch
             }
             this.options = options;
             httpClient = options.HttpClientFactory();
+            logger = loggerFactory.CreateLogger<ElasticSearchTelemetryReplicator>();
         }
 
         public Task ReplicateAsync(JArray body, IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
         {
+            logger.LogInformation($"Replicates {body.Count} item(s).");
             var data = GetBulkBody(body)
                 .Select(item => JsonConvert.SerializeObject(item, options.JsonSerializerSettings) + "\n")
                 .Join("");
-            var message = new HttpRequestMessage(HttpMethod.Post, options.BulkEndPoint);
+            var message = new HttpRequestMessage(HttpMethod.Post,
+                options.BulkEndPoint);
             message.Content = new StringContent(data, Encoding.UTF8);
 
             return httpClient.SendAsync(message, CancellationToken.None);

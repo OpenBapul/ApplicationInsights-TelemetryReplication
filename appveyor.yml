@@ -4,6 +4,14 @@
     only:
       - master
 
+  environment:
+    matrix:
+      - CLI_VERSION: 1.0.0-preview2-1-003177
+
+  install:
+    # .NET Core SDK binaries
+    - ps: .\dotnet-install.ps1 -version $env:CLI_VERSION
+    - ps: dotnet --info
   version: '{build}'  
   skip_commits:
     message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/
@@ -33,6 +41,14 @@
     only:
       - dev
 
+  environment:
+    matrix:
+      - CLI_VERSION: 1.0.0-preview2-1-003177
+
+  install:
+    # .NET Core SDK binaries
+    - ps: .\dotnet-install.ps1 -version $env:CLI_VERSION
+    - ps: dotnet --info
   version: '{build}'  
   skip_commits:
     message: /(Created.*\.(png|jpg|jpeg|bmp|gif))|(README.md)/

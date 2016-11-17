@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using System.Collections;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationInsights.TelemetryReplication.ElasticSearch.Tests
 {
@@ -18,13 +19,15 @@ namespace ApplicationInsights.TelemetryReplication.ElasticSearch.Tests
         public void Has_GuardClause()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new ElasticSearchTelemetryReplicator(null));
+                () => new ElasticSearchTelemetryReplicator(null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new ElasticSearchTelemetryReplicator(new ElasticSearchTelemetryReplicatorOptions(), null));
         }
         [Theory, ClassData(typeof(InvalidOptions))]
         public void Throws_ArgumentException_with_invalid_options(ElasticSearchTelemetryReplicatorOptions options)
         {
             Assert.Throws<ArgumentException>(
-                () => new ElasticSearchTelemetryReplicator(options));
+                () => new ElasticSearchTelemetryReplicator(options, Mock.Of<ILoggerFactory>()));
         }
 
         [Fact]
@@ -44,7 +47,7 @@ namespace ApplicationInsights.TelemetryReplication.ElasticSearch.Tests
                 HttpClientFactory = () => httpClientMock.Object,
                 IndexSelector = _ => new IndexDefinition { Index = "ai", Type = "telemetry" },
             };
-            var sut = new ElasticSearchTelemetryReplicator(options);
+            var sut = new ElasticSearchTelemetryReplicator(options, new DummyLoggerFactory());
             var expected = ComplexSampleObjects;
             var jarray = JArray.FromObject(expected);
             await sut.ReplicateAsync(jarray, Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
@@ -134,6 +137,23 @@ namespace ApplicationInsights.TelemetryReplication.ElasticSearch.Tests
                         .All(i => (other.NestedArray[i] == null && NestedArray[i] == null)
                             || (other.NestedArray[i] != null && other.NestedArray[i].Equals(NestedArray[i])))));
                 return result;
+            }
+        }
+
+        private class DummyLoggerFactory : ILoggerFactory
+        {
+            public void AddProvider(ILoggerProvider provider)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILogger CreateLogger(string categoryName)
+            {
+                return Mock.Of<ILogger>();
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "title": "ApplicationInsights Telemetry Replication Logging Extension",
   "packOptions": {
@@ -8,10 +8,10 @@
 
   "dependencies": {
     "ApplicationInsights.TelemetryReplication": "*",
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "Microsoft.ApplicationInsights": "2.1.0",
-    "System.ComponentModel": "4.0.1"
+    "Microsoft.Extensions.DependencyInjection": "1.1.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "System.ComponentModel": "4.3.0"
   },
 
   "frameworks": {

@@ -5,38 +5,12 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace ApplicationInsights.TelemetryReplication.AspNetCore
 {
     public static class TelemetryReplicationExtensions
     {
-        private static string OriginalTelemetryChannelEndpointAddress { get; set; }
-
-        public static IServiceCollection AddApplicationInsightsTelemetryReplication(
-            this IServiceCollection services)
-        {
-            return AddApplicationInsightsTelemetryReplication(services, null);
-        }
-        public static IServiceCollection AddApplicationInsightsTelemetryReplication(
-            this IServiceCollection services,
-            Action<TelemetryProxyOptions> configure)
-        {
-            services.AddSingleton(provider =>
-            {
-                var options = new TelemetryProxyOptions();
-                configure?.Invoke(options);
-                if (OriginalTelemetryChannelEndpointAddress != null)
-                {
-                    options.DestinationUri = new Uri(
-                        OriginalTelemetryChannelEndpointAddress, 
-                        UriKind.Absolute);
-                }
-                return options;
-            });
-            services.AddSingleton<TelemetryProxy>();
-            return services;
-        }
-
         /// <summary>
         /// Use ApplicationInsights TelemetryReplication app.
         /// The telemetry proxy will be determined by the first request's scheme and host.
@@ -68,14 +42,13 @@ namespace ApplicationInsights.TelemetryReplication.AspNetCore
             AppId appId,
             Uri proxyUri)
         {
-            var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
+            var configuration = app.ApplicationServices.GetService<IConfiguration>();
+            var telemetryConfiguration = app.ApplicationServices.GetService<TelemetryConfiguration>();
             var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
-            OriginalTelemetryChannelEndpointAddress =
-                configuration.TelemetryChannel.EndpointAddress;
             app.UseMiddleware<TelemetryReplicationMiddleware>(
                 appId,
                 proxyUri, 
-                configuration, 
+                telemetryConfiguration, 
                 loggerFactory);
             return app;
         }
