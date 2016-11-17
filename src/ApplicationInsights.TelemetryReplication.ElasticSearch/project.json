@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "title": "ApplicationInsights Telemetry Replicator for ElasticSearch bulk API",
   "packOptions": {
@@ -8,7 +8,7 @@
 
   "dependencies": {
     "ApplicationInsights.TelemetryReplication": "*",
-    "System.Net.Http": "4.1.0"
+    "System.Net.Http": "4.3.0"
   },
 
   "frameworks": {
