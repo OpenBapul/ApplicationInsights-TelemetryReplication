@@ -43,7 +43,7 @@ namespace Samples.AspNetCore
                 };
             });
             services.AddApplicationInsightsTelemetryReplication();
-            services.AddMvcCore();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,15 +58,12 @@ namespace Samples.AspNetCore
             app.UseApplicationInsightsTelemetryReplication(
                 env.GetAppId(typeof(Startup)),
                 new Uri(Configuration["ApplicationInsights:ProxyUri"], UriKind.Absolute));
-            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler();
             }
-
-            app.UseApplicationInsightsExceptionTelemetry();
 
             app.Run(async (context) =>
             {
